@@ -1,11 +1,12 @@
 package main
 
 import (
+	"log"
+	"os"
+
 	"github.com/auth/internal/config"
 	lgr "github.com/auth/internal/logger"
 	"go.uber.org/zap"
-	"log"
-	"os"
 )
 
 func main() {

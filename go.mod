@@ -1,4 +1,4 @@
-module github.com/auth
+module github.com/plyama/auth
 
 go 1.16
 

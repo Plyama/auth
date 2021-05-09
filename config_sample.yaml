@@ -1,0 +1,7 @@
+listener:
+  port: 8000
+
+logger:
+  env: local
+  level: debug
+  version: beta

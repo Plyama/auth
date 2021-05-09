@@ -4,8 +4,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/auth/internal/config"
-	lgr "github.com/auth/internal/logger"
+	"github.com/plyama/auth/internal/config"
+	lgr "github.com/plyama/auth/internal/logger"
 	"go.uber.org/zap"
 )
 

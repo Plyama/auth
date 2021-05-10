@@ -3,6 +3,8 @@ package service
 import (
 	"github.com/plyama/auth/internal/models"
 	"github.com/plyama/auth/internal/repository"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type Users struct {
@@ -16,5 +18,13 @@ func NewUsers(usersRepo repository.Users) *Users {
 }
 
 func (s *Users) CreateUser(user models.User) error {
+	passwordBytes, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		// TODO: log error
+		return err
+	}
+
+	user.Password = string(passwordBytes)
+
 	return s.UsersRepository.Create(user)
 }

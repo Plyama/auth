@@ -6,6 +6,7 @@ import (
 
 	"github.com/plyama/auth/internal/config"
 	lgr "github.com/plyama/auth/internal/logger"
+
 	"go.uber.org/zap"
 )
 

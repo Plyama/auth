@@ -18,8 +18,8 @@ func (h *UserHandler) SignUp(c *gin.Context) {
 	}
 
 	user := models.User{
-		Name: body.Name,
-		Email: body.Email,
+		Name:     body.Name,
+		Email:    body.Email,
 		Password: body.Password,
 	}
 	err = h.UserService.CreateUser(user)

@@ -12,7 +12,7 @@ import (
 )
 
 func GenerateJWT(user models.User) (string, error) {
-	secret := os.Getenv("SECRET")
+	secret := os.Getenv("JWT_SECRET")
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id": user.ID,

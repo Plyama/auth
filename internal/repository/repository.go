@@ -8,6 +8,8 @@ import (
 
 type Users interface {
 	Create(user models.User) error
+	IsRegistered(email string) (bool, error)
+	GetByEmail(email string) (models.User, error)
 }
 
 type Repositories struct {

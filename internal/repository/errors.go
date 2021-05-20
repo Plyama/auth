@@ -1,3 +1,3 @@
 package repository
 
-type ErrorAlreadyExists error
+type ErrorDuplicate error

@@ -1,12 +1,11 @@
 package handlers
 
 import (
-	"context"
+	"github.com/plyama/auth/internal/utils/auth"
 	"log"
 	"net/http"
 
 	"github.com/plyama/auth/internal/models"
-	"github.com/plyama/auth/internal/repository"
 	"github.com/plyama/auth/internal/requests"
 	"github.com/plyama/auth/internal/utils/oauth"
 
@@ -27,18 +26,35 @@ func (h *User) SignUpCallback(c *gin.Context) {
 		return
 	}
 
-	conf := oauth.NewGoogleConfig(oauth.GoogleSignUpCallbackURL())
-	token, err := conf.Exchange(context.Background(), req.Code)
+	userData, err := h.UserService.GetUserGoogleData(req.Code)
 	if err != nil {
-		log.Printf("failed to exchange code for token: %v", err)
+		log.Println(err)
 		c.Status(http.StatusInternalServerError)
 		return
 	}
 
-	userData, err := oauth.GetGoogleUserInfo(token.AccessToken)
+	registered, err := h.UserService.IsRegistered(userData.Email)
 	if err != nil {
-		log.Printf("failed to get user info using AccessToken: %v", err)
+		log.Printf("failed to check if user is registered: %v", err)
 		c.Status(http.StatusInternalServerError)
+		return
+	}
+	if registered {
+		user, err := h.UserService.GetByEmail(userData.Email)
+		if err != nil {
+			log.Printf("failed to get user from db: %v", err)
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+
+		jwt, err := auth.GenerateJWT(user)
+		if err != nil {
+			log.Printf("failed to generate jwt: %v", err)
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+
+		c.String(http.StatusOK, jwt)
 		return
 	}
 
@@ -50,14 +66,9 @@ func (h *User) SignUpCallback(c *gin.Context) {
 	err = h.UserService.UsersRepository.Create(user)
 	if err != nil {
 		log.Printf("failed to create user in db: %v", err)
-		switch err.(type) {
-		case repository.ErrorAlreadyExists:
-			c.Status(http.StatusConflict)
-		default:
-			c.Status(http.StatusInternalServerError)
-		}
+		c.Status(http.StatusInternalServerError)
 		return
 	}
 
-	c.Status(http.StatusCreated)
+	c.Redirect(http.StatusCreated, "https://www.google.com/")
 }

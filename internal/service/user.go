@@ -1,8 +1,11 @@
 package service
 
 import (
+	"context"
+	"github.com/pkg/errors"
 	"github.com/plyama/auth/internal/models"
 	"github.com/plyama/auth/internal/repository"
+	"github.com/plyama/auth/internal/utils/oauth"
 )
 
 type Users struct {
@@ -17,4 +20,27 @@ func NewUsers(usersRepo repository.Users) *Users {
 
 func (s *Users) Create(user models.User) error {
 	return s.UsersRepository.Create(user)
+}
+
+func (s *Users) IsRegistered(email string) (bool, error) {
+	return s.UsersRepository.IsRegistered(email)
+}
+
+func (s *Users) GetUserGoogleData(oauthCode string) (*oauth.GoogleUserData, error) {
+	conf := oauth.NewGoogleConfig(oauth.GoogleSignUpCallbackURL())
+	token, err := conf.Exchange(context.Background(), oauthCode)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to exchange code for token")
+	}
+
+	userData, err := oauth.GetGoogleUserInfo(token.AccessToken)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get user info using AccessToken")
+	}
+
+	return &userData, nil
+}
+
+func (s *Users) GetByEmail(email string) (models.User, error) {
+	return s.UsersRepository.GetByEmail(email)
 }

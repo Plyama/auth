@@ -1,8 +1,8 @@
 package models
 
 type User struct {
-	ID       int32
-	Name     string
-	Email    string
-	Password string
+	ID    int32
+	Name  string
+	Email string `gorm:"unique"`
+	Token string
 }

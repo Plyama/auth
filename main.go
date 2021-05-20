@@ -1,28 +1,44 @@
 package main
 
 import (
-	"log"
-	"os"
-
-	"github.com/plyama/auth/internal/config"
+	"github.com/plyama/auth/internal"
+	"github.com/plyama/auth/internal/db"
 	lgr "github.com/plyama/auth/internal/logger"
 
+	"github.com/joho/godotenv"
 	"go.uber.org/zap"
 )
 
 func main() {
-	appConfig, err := config.NewAppConfig(os.Getenv("CONFIG_PATH"))
-	if err != nil {
-		log.Fatal("error while init config", zap.Error(err))
-	}
+	//appConfig, err := config.NewAppConfig(os.Getenv("CONFIG_PATH"))
+	//if err != nil {
+	//	log.Fatal("error while init config", zap.Error(err))
+	//}
 
-	_, err = lgr.New(
+	logger, err := lgr.New(
 		"auth",
-		appConfig.Logger.Version,
-		appConfig.Logger.Env,
-		appConfig.Logger.Level,
+		"1",
+		"1",
+		"1",
 	)
 	if err != nil {
-		log.Fatal("error while init logger", zap.Error(err))
+		logger.Fatal("error while init logger", zap.Error(err))
 	}
+
+	err = godotenv.Load("env")
+	if err != nil {
+		logger.Fatal("failed to load env", zap.Error(err))
+	}
+
+	DB, err := db.NewPgGorm()
+	if err != nil {
+		logger.Fatal("failed to connect database", zap.Error(err))
+	}
+
+	err = db.Migrate(DB)
+	if err != nil {
+		logger.Fatal("failed to migrate", zap.Error(err))
+	}
+
+	internal.Run(DB, logger)
 }

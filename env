@@ -1,0 +1,11 @@
+GOOGLE_CLIENT_ID=272210477903-96m9fb9qrb2a2tgpkhlddeu7v4d6g420.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=YPl8MyLNtnAQ9qWHmGdAIV-M
+GOOGLE_SIGN_UP_CALLBACK=google-callback
+DB_HOST=db
+DB_USER=user
+DB_PASSWORD=password
+DB_NAME=app
+DB_PORT=5432
+DB_SSLMODE=disable
+DB_TIMEZONE=Asia/Shanghai
+PORT=5000

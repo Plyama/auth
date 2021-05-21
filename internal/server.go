@@ -1,6 +1,7 @@
 package internal
 
-import ("net/http"
+import (
+	"net/http"
 	"os"
 
 	"github.com/plyama/auth/internal/app"

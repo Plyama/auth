@@ -12,12 +12,18 @@ type Users interface {
 	GetByEmail(email string) (models.User, error)
 }
 
+type Tasks interface {
+	Create(task models.Task) error
+}
+
 type Repositories struct {
 	Users Users
+	Tasks Tasks
 }
 
 func NewRepositories(db *gorm.DB) *Repositories {
 	return &Repositories{
 		Users: NewUsersRepo(db),
+		Tasks: NewTasksRepo(db),
 	}
 }

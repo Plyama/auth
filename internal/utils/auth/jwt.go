@@ -29,12 +29,12 @@ func GenerateJWT(user models.User) (string, error) {
 func ReadToken(r *http.Request) (*jwt.Token, error) {
 	authHeader := r.Header.Get("Authorization")
 	if authHeader == "" {
-		return &jwt.Token{}, errors.New("there is no auth header")
+		return nil, NotValidAuthHeader(errors.New("there is no auth header"))
 	}
 
 	headerWords := strings.Split(authHeader, " ")
 	if len(headerWords) != 2 {
-		return &jwt.Token{}, errors.New("not valid auth header")
+		return nil, NotValidAuthHeader(errors.New("not valid auth header"))
 	}
 
 	authToken := headerWords[1]
@@ -44,7 +44,7 @@ func ReadToken(r *http.Request) (*jwt.Token, error) {
 			return "", errors.New("not valid token")
 		}
 
-		return []byte(os.Getenv("SECRET")), nil
+		return []byte(os.Getenv("JWT_SECRET")), nil
 	})
 
 	return token, err

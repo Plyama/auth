@@ -37,13 +37,13 @@ func GetGoogleUserInfo(accessToken string) (GoogleUserData, error) {
 
 	resp, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + url.QueryEscape(accessToken))
 	if err != nil {
-		panic(err)
+		return userInfo, err
 	}
 	defer resp.Body.Close()
 
 	userBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		panic(err)
+		return userInfo, err
 	}
 
 	err = json.Unmarshal(userBytes, &userInfo)

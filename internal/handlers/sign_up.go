@@ -61,9 +61,10 @@ func (h *User) SignUpCallback(c *gin.Context) {
 	user := models.User{
 		Name:  userData.Name,
 		Email: userData.Email,
+		Role:  models.Customer,
 	}
 
-	err = h.UserService.UsersRepository.Create(user)
+	err = h.UserService.Create(user)
 	if err != nil {
 		log.Printf("failed to create user in db: %v", err)
 		c.Status(http.StatusInternalServerError)

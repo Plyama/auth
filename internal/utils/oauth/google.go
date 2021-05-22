@@ -52,5 +52,5 @@ func GetGoogleUserInfo(accessToken string) (GoogleUserData, error) {
 }
 
 func GoogleSignUpCallbackURL() string {
-	return fmt.Sprintf("http://localhost:%s/%s", os.Getenv("PORT"), os.Getenv("GOOGLE_SIGN_UP_CALLBACK"))
+	return fmt.Sprintf("http://%s:%s/%s", os.Getenv("HOST"), os.Getenv("PORT"), os.Getenv("GOOGLE_SIGN_UP_CALLBACK"))
 }

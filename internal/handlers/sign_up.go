@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/plyama/auth/internal/responses"
 	"github.com/plyama/auth/internal/utils/auth"
 	"log"
 	"net/http"
@@ -12,6 +13,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// SignUpRedirect godoc
+// @Summary Redirect to an OAuth page of Google
+// @Description No data needed
+// @ID sign-up-google
+// @Success 307
+// @Router /auth/google-oauth [get]
 func (h *User) SignUpRedirect(c *gin.Context) {
 	googleOauthConf := oauth.NewGoogleConfig(oauth.GoogleSignUpCallbackURL())
 	redirectURL := googleOauthConf.AuthCodeURL("")
@@ -19,6 +26,13 @@ func (h *User) SignUpRedirect(c *gin.Context) {
 	c.Redirect(http.StatusTemporaryRedirect, redirectURL)
 }
 
+// SignUpCallback godoc
+// @Summary Redirect to app's page with login
+// @ID sign-up-google-callback
+// @Success 200 {object} responses.JWT
+// @Success 201 "User created"
+// @Failure 400,500
+// @Router /auth/google-oauth [get]
 func (h *User) SignUpCallback(c *gin.Context) {
 	req, err := requests.CompleteOAuth(c.Request)
 	if err != nil {
@@ -53,8 +67,12 @@ func (h *User) SignUpCallback(c *gin.Context) {
 			c.Status(http.StatusInternalServerError)
 			return
 		}
+		resp := responses.JWT{
+			Token: jwt,
+			TokenType: "jwt",
+		}
 
-		c.String(http.StatusOK, jwt)
+		c.JSON(http.StatusOK, resp)
 		return
 	}
 

@@ -9,6 +9,15 @@ import (
 	"net/http"
 )
 
+// Create godoc
+// @Summary Create a task
+// @ID create-task
+// @Accept  json
+// @Param task body requests.Task true "Task info"
+// @Param Authorization header string true "Insert your jwt"
+// @Success 201 "Task created"
+// @Failure 400,500
+// @Router /tasks [post]
 func (h *Task) Create(c *gin.Context) {
 	req, err := requests.NewTask(c.Request)
 	if err != nil {

@@ -16,9 +16,18 @@ func NewRouter(services *services.Services) *gin.Engine {
 		Task: handlers.NewTask(services.Task),
 	}
 
-	r.GET("google-oauth", handler.User.SignUpRedirect)
-	r.GET("google-callback", handler.User.SignUpCallback)
-	r.POST("create-task", middlewares.Authorize, handler.Task.Create)
+	api := r.Group("api/v1")
+
+	authGroup := api.Group("auth")
+	{
+		authGroup.GET("google-oauth", handler.User.SignUpRedirect)
+		authGroup.GET("google-callback", handler.User.SignUpCallback)
+	}
+
+	taskGroup := api.Group("tasks")
+	{
+		taskGroup.POST("", middlewares.Authorize, handler.Task.Create)
+	}
 
 	return r
 }

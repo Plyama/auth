@@ -68,7 +68,7 @@ func (h *User) SignUpCallback(c *gin.Context) {
 			return
 		}
 		resp := responses.JWT{
-			Token: jwt,
+			Token:     jwt,
 			TokenType: "jwt",
 		}
 

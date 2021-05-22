@@ -25,3 +25,10 @@ func (r *TaskRepo) Create(task models.Task) error {
 
 	return tx.Error
 }
+
+func (r *TaskRepo) GetAll() (*[]models.Task, error) {
+	var tasks []models.Task
+	tx := r.db.Find(&tasks)
+
+	return &tasks, tx.Error
+}

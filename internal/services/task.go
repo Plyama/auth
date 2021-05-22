@@ -19,3 +19,7 @@ func (s *Tasks) Create(task models.Task) error {
 	task.Status = models.Published
 	return s.TasksRepository.Create(task)
 }
+
+func (s *Tasks) GetAll() (*[]models.Task, error) {
+	return s.TasksRepository.GetAll()
+}

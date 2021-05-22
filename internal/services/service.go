@@ -14,6 +14,7 @@ type UsersService interface {
 
 type TasksService interface {
 	Create(task models.Task) error
+	GetAll() (*[]models.Task, error)
 }
 
 type Services struct {

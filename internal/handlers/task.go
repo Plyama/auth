@@ -5,6 +5,7 @@ import (
 	"github.com/plyama/auth/internal/middlewares"
 	"github.com/plyama/auth/internal/models"
 	"github.com/plyama/auth/internal/requests"
+	"github.com/plyama/auth/internal/responses"
 	"log"
 	"net/http"
 )
@@ -34,7 +35,7 @@ func (h *Task) Create(c *gin.Context) {
 	}
 
 	task := models.Task{
-		CustomerID:  int(customerID),
+		CustomerID:  customerID,
 		Name:        req.Name,
 		Description: req.Description,
 	}
@@ -47,4 +48,16 @@ func (h *Task) Create(c *gin.Context) {
 	}
 
 	c.Status(http.StatusCreated)
+}
+
+func (h *Task) GetAll(c *gin.Context) {
+	taskModels, err := h.TaskService.GetAll()
+	if err != nil {
+		log.Printf("failed to get all tasks: %v", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	tasks := responses.GetTasks(*taskModels)
+	c.JSON(http.StatusOK, *tasks)
 }

@@ -26,6 +26,7 @@ func NewRouter(services *services.Services) *gin.Engine {
 
 	taskGroup := api.Group("tasks")
 	{
+		taskGroup.GET("", handler.Task.GetAll)
 		taskGroup.POST("", middlewares.Authorize, handler.Task.Create)
 	}
 

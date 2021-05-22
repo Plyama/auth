@@ -14,6 +14,7 @@ type Users interface {
 
 type Tasks interface {
 	Create(task models.Task) error
+	GetAll() (*[]models.Task, error)
 }
 
 type Repositories struct {

@@ -14,7 +14,7 @@ type Task struct {
 	CustomerID  int
 	Coach       User
 	CoachID     *int
-	Name        string
-	Description string
-	Status      TaskStatus
+	Name        string     `gorm:"not null"`
+	Description string     `gorm:"not null"`
+	Status      TaskStatus `gorm:"not null"`
 }

@@ -24,10 +24,18 @@ func GetTask(model models.Task) Task {
 	}
 }
 
-func GetTasks(models []models.Task) *[]Task {
+func GetTaskPreview(model models.Task) Task {
+	return Task{
+		ID:     model.ID,
+		Name:   model.Name,
+		Status: model.Status,
+	}
+}
+
+func GetTasks(models []models.Task, function func(task models.Task) Task) *[]Task {
 	tasks := make([]Task, 0, len(models))
 	for _, model := range models {
-		tasks = append(tasks, GetTask(model))
+		tasks = append(tasks, function(model))
 	}
 
 	return &tasks

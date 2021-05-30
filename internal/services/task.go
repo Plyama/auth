@@ -20,6 +20,14 @@ func (s *Tasks) Create(task models.Task) error {
 	return s.TasksRepository.Create(task)
 }
 
-func (s *Tasks) GetAll() (*[]models.Task, error) {
-	return s.TasksRepository.GetAll()
+func (s *Tasks) GetDetails(taskID int) (*models.Task, error) {
+	return s.TasksRepository.GetDetails(taskID)
+}
+
+func (s *Tasks) GetForCustomer(userID int) (*[]models.Task, error) {
+	return s.TasksRepository.GetForCustomer(userID)
+}
+
+func (s *Tasks) GetForCoach(userID int) (*[]models.Task, error) {
+	return s.TasksRepository.GetForCoach(userID)
 }

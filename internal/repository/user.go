@@ -28,6 +28,19 @@ func (r *UserRepo) Create(user models.User) error {
 	return tx.Error
 }
 
+func (r *UserRepo) Update(user models.User) error {
+	tx := r.db.Model(&user).Updates(models.User{
+		PicURL: user.PicURL,
+		DOB:    user.DOB,
+	})
+
+	if user.ID == 0 {
+		return ErrorDuplicate(errors.New("user with similar unique fields exists"))
+	}
+
+	return tx.Error
+}
+
 func (r *UserRepo) IsRegistered(email string) (bool, error) {
 	var user models.User
 	tx := r.db.Where("email = ?", email).First(&user)

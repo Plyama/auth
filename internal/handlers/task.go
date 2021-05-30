@@ -6,6 +6,7 @@ import (
 	"github.com/plyama/auth/internal/models"
 	"github.com/plyama/auth/internal/requests"
 	"github.com/plyama/auth/internal/responses"
+	"gorm.io/gorm"
 	"log"
 	"net/http"
 )
@@ -14,28 +15,33 @@ import (
 // @Summary Create a task
 // @ID create-task
 // @Accept  json
-// @Param task body requests.Task true "Task info"
+// @Param task body requests.NewTask true "NewTask info"
 // @Param Authorization header string true "Insert your jwt"
-// @Success 201 "Task created"
+// @Success 201 "NewTask created"
 // @Failure 400,500
 // @Router /tasks [post]
 func (h *Task) Create(c *gin.Context) {
-	req, err := requests.NewTask(c.Request)
+	req, err := requests.CreateTask(c.Request)
 	if err != nil {
 		log.Println(err)
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	customerID, err := middlewares.GetUserID(c.Request.Context())
+	user, err := middlewares.GetUserData(c.Request.Context())
 	if err != nil {
 		log.Println(err)
 		c.Status(http.StatusInternalServerError)
 		return
 	}
 
+	if user.Role != models.Customer {
+		c.Status(http.StatusForbidden)
+		return
+	}
+
 	task := models.Task{
-		CustomerID:  customerID,
+		CustomerID:  user.ID,
 		Name:        req.Name,
 		Description: req.Description,
 	}
@@ -50,14 +56,62 @@ func (h *Task) Create(c *gin.Context) {
 	c.Status(http.StatusCreated)
 }
 
-func (h *Task) GetAll(c *gin.Context) {
-	taskModels, err := h.TaskService.GetAll()
+func (h *Task) GetTaskDetails(c *gin.Context) {
+	req, err := requests.GetOne(c)
 	if err != nil {
-		log.Printf("failed to get all tasks: %v", err)
+		log.Println(err)
+		return
+	}
+
+	user, err := middlewares.GetUserData(c.Request.Context())
+	if err != nil {
+		log.Println(err)
 		c.Status(http.StatusInternalServerError)
 		return
 	}
 
-	tasks := responses.GetTasks(*taskModels)
+	task, err := h.TaskService.GetDetails(req.ID)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		log.Println(err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	if task.CustomerID != user.ID && *task.CoachID != user.ID {
+		c.Status(http.StatusForbidden)
+		return
+	}
+
+	response := responses.GetTask(*task)
+	c.JSON(http.StatusOK, response)
+}
+
+func (h *Task) GetTasks(c *gin.Context) {
+	user, err := middlewares.GetUserData(c.Request.Context())
+	if err != nil {
+		log.Println(err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	var taskModels *[]models.Task
+
+	switch user.Role {
+	case models.Customer:
+		taskModels, err = h.TaskService.GetForCustomer(user.ID)
+	case models.Coach:
+		taskModels, err = h.TaskService.GetForCoach(user.ID)
+	}
+	if err != nil {
+		log.Printf("failed to get tasks: %v", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	tasks := responses.GetTasks(*taskModels, responses.GetTaskPreview)
 	c.JSON(http.StatusOK, *tasks)
 }

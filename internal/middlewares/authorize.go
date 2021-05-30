@@ -54,11 +54,11 @@ func Authorize(c *gin.Context) {
 	c.Next()
 }
 
-func GetUserID(ctx context.Context) (int, error) {
-	ID, ok := ctx.Value(authContextKey).(int)
+func GetUserData(ctx context.Context) (*auth.UserData, error) {
+	data, ok := ctx.Value(authContextKey).(auth.UserData)
 	if !ok {
-		return 0, errors.New("failed to get user's ID")
+		return nil, errors.New("failed to get user's ID")
 	}
 
-	return ID, nil
+	return &data, nil
 }

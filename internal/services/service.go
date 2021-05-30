@@ -7,6 +7,7 @@ import (
 
 type UsersService interface {
 	Create(user models.User) error
+	Update(user models.User) error
 	IsRegistered(email string) (bool, error)
 	GetByEmail(email string) (models.User, error)
 	GetUserGoogleData(oauthCode string) (*oauth.GoogleUserData, error)
@@ -14,7 +15,9 @@ type UsersService interface {
 
 type TasksService interface {
 	Create(task models.Task) error
-	GetAll() (*[]models.Task, error)
+	GetDetails(taskID int) (*models.Task, error)
+	GetForCustomer(userID int) (*[]models.Task, error)
+	GetForCoach(userID int) (*[]models.Task, error)
 }
 
 type Services struct {

@@ -11,11 +11,19 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+type UserData struct {
+	ID   int
+	Role models.UserRole
+}
+
 func GenerateJWT(user models.User) (string, error) {
 	secret := os.Getenv("JWT_SECRET")
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id": user.ID,
+		"user_data": UserData{
+			ID:   int(user.ID),
+			Role: user.Role,
+		},
 	})
 
 	tokenString, err := token.SignedString([]byte(secret))

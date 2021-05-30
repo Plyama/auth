@@ -26,9 +26,23 @@ func (r *TaskRepo) Create(task models.Task) error {
 	return tx.Error
 }
 
-func (r *TaskRepo) GetAll() (*[]models.Task, error) {
+func (r *TaskRepo) GetDetails(taskID int) (*models.Task, error) {
+	var task models.Task
+	tx := r.db.Where("id = ?", taskID).First(&task)
+
+	return &task, tx.Error
+}
+
+func (r *TaskRepo) GetForCustomer(userID int) (*[]models.Task, error) {
 	var tasks []models.Task
-	tx := r.db.Find(&tasks)
+	tx := r.db.Where("customer_id = ?", userID).Find(&tasks)
+
+	return &tasks, tx.Error
+}
+
+func (r *TaskRepo) GetForCoach(userID int) (*[]models.Task, error) {
+	var tasks []models.Task
+	tx := r.db.Where("coach_id = ?", userID).Find(&tasks)
 
 	return &tasks, tx.Error
 }

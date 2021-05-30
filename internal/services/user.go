@@ -22,6 +22,10 @@ func (s *Users) Create(user models.User) error {
 	return s.UsersRepository.Create(user)
 }
 
+func (s *Users) Update(user models.User) error {
+	return s.UsersRepository.Update(user)
+}
+
 func (s *Users) IsRegistered(email string) (bool, error) {
 	return s.UsersRepository.IsRegistered(email)
 }

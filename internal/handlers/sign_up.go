@@ -26,14 +26,14 @@ func (h *User) SignUpRedirect(c *gin.Context) {
 	c.Redirect(http.StatusTemporaryRedirect, redirectURL)
 }
 
-// SignUpCallback godoc
+// SignUpWebCallback godoc
 // @Summary Redirect to app's page with login
 // @ID sign-up-google-callback
 // @Success 200 {object} responses.JWT
 // @Success 201 "User created"
 // @Failure 400,500
 // @Router /auth/google-oauth [get]
-func (h *User) SignUpCallback(c *gin.Context) {
+func (h *User) SignUpWebCallback(c *gin.Context) {
 	req, err := requests.CompleteOAuth(c.Request)
 	if err != nil {
 		c.Status(http.StatusBadRequest)
@@ -43,6 +43,65 @@ func (h *User) SignUpCallback(c *gin.Context) {
 	userData, err := h.UserService.GetUserGoogleData(req.Code)
 	if err != nil {
 		log.Println(err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	registered, err := h.UserService.IsRegistered(userData.Email)
+	if err != nil {
+		log.Printf("failed to check if user is registered: %v", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+	if registered {
+		user, err := h.UserService.GetByEmail(userData.Email)
+		if err != nil {
+			log.Printf("failed to get user from db: %v", err)
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+
+		jwt, err := auth.GenerateJWT(user)
+		if err != nil {
+			log.Printf("failed to generate jwt: %v", err)
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+		resp := responses.JWT{
+			Token:     jwt,
+			TokenType: "jwt",
+		}
+
+		c.JSON(http.StatusOK, resp)
+		return
+	}
+
+	user := models.User{
+		Name:  userData.Name,
+		Email: userData.Email,
+		Role:  models.Coach,
+	}
+
+	err = h.UserService.Create(user)
+	if err != nil {
+		log.Printf("failed to create user in db: %v", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.Redirect(http.StatusCreated, "https://www.google.com/")
+}
+
+func (h *User) SignUpMobileCallback(c *gin.Context) {
+	accessToken := c.GetHeader("access_token")
+	if accessToken == "" {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	userData, err := oauth.GetGoogleUserInfo(accessToken)
+	if err != nil {
+		log.Printf("error while getting google user's info: %v\n", err)
 		c.Status(http.StatusInternalServerError)
 		return
 	}
@@ -89,5 +148,5 @@ func (h *User) SignUpCallback(c *gin.Context) {
 		return
 	}
 
-	c.Redirect(http.StatusCreated, "https://www.google.com/")
+	c.Status(http.StatusCreated)
 }

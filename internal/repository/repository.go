@@ -10,11 +10,14 @@ type Users interface {
 	Create(user models.User) error
 	IsRegistered(email string) (bool, error)
 	GetByEmail(email string) (models.User, error)
+	Update(user models.User) error
 }
 
 type Tasks interface {
 	Create(task models.Task) error
-	GetAll() (*[]models.Task, error)
+	GetForCustomer(userID int) (*[]models.Task, error)
+	GetForCoach(userID int) (*[]models.Task, error)
+	GetDetails(taskID int) (*models.Task, error)
 }
 
 type Repositories struct {

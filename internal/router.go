@@ -17,17 +17,22 @@ func NewRouter(services *services.Services) *gin.Engine {
 	}
 
 	api := r.Group("api/v1")
-
-	authGroup := api.Group("auth")
 	{
-		authGroup.GET("google-oauth", handler.User.SignUpRedirect)
-		authGroup.GET("google-callback", handler.User.SignUpCallback)
+		api.GET("google-oauth", handler.User.SignUpRedirect)
 	}
 
-	taskGroup := api.Group("tasks")
+	customer := api.Group("customer")
 	{
-		taskGroup.GET("", handler.Task.GetAll)
-		taskGroup.POST("", middlewares.Authorize, handler.Task.Create)
+		customer.POST("google-callback", handler.User.SignUpMobileCallback)
+
+		tasks := api.Group("tasks")
+		tasks.POST("", middlewares.Authorize, handler.Task.Create)
+		tasks.GET("", middlewares.Authorize, handler.Task.GetTasks)
+	}
+
+	coach := api.Group("coach")
+	{
+		coach.GET("google-callback", handler.User.SignUpWebCallback)
 	}
 
 	return r

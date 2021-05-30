@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 type UserRole string
 
 const (
@@ -8,8 +10,10 @@ const (
 )
 
 type User struct {
-	ID    int32
-	Name  string   `gorm:"not null"`
-	Email string   `gorm:"unique"`
-	Role  UserRole `gorm:"not null"`
+	ID     int
+	Name   string   `gorm:"not null"`
+	Email  string   `gorm:"unique"`
+	Role   UserRole `gorm:"not null"`
+	PicURL *string
+	DOB    *time.Time
 }

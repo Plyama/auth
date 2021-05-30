@@ -3,6 +3,7 @@ package middlewares
 import (
 	"context"
 	"errors"
+	"github.com/mitchellh/mapstructure"
 	"log"
 	"net/http"
 
@@ -49,8 +50,9 @@ func Authorize(c *gin.Context) {
 		return
 	}
 
-	userData, ok := value.(auth.UserData)
-	if !ok {
+	var userData auth.UserData
+	err = mapstructure.Decode(value, &userData)
+	if err != nil {
 		log.Println("failed to transform to auth.UserData")
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return

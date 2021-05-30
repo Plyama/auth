@@ -19,7 +19,7 @@ import (
 // @Param Authorization header string true "Insert your jwt"
 // @Success 201 "NewTask created"
 // @Failure 400,500
-// @Router /tasks [post]
+// @Router /customer/tasks [post]
 func (h *Task) Create(c *gin.Context) {
 	req, err := requests.CreateTask(c.Request)
 	if err != nil {
@@ -41,7 +41,7 @@ func (h *Task) Create(c *gin.Context) {
 	}
 
 	task := models.Task{
-		CustomerID:  user.ID,
+		CustomerID:  int(user.ID),
 		Name:        req.Name,
 		Description: req.Description,
 	}
@@ -90,6 +90,13 @@ func (h *Task) GetTaskDetails(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+// GetTasks godoc
+// @ID Get-Tasks
+// @Param Authorization header string true "Insert your jwt"
+// @Success 201 "NewTask created"
+// @Success 200 {object} []responses.
+// @Failure 400,500
+// @Router /customer/google-callback [post]
 func (h *Task) GetTasks(c *gin.Context) {
 	user, err := middlewares.GetUserData(c.Request.Context())
 	if err != nil {

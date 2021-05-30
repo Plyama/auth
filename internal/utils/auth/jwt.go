@@ -12,7 +12,7 @@ import (
 )
 
 type UserData struct {
-	ID   int
+	ID   float64
 	Role models.UserRole
 }
 
@@ -21,7 +21,7 @@ func GenerateJWT(user models.User) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_data": UserData{
-			ID:   int(user.ID),
+			ID:   float64(user.ID),
 			Role: user.Role,
 		},
 	})

@@ -18,7 +18,7 @@ import (
 // @Description No data needed
 // @ID sign-up-google
 // @Success 307
-// @Router /auth/google-oauth [get]
+// @Router /google-oauth [get]
 func (h *User) SignUpRedirect(c *gin.Context) {
 	googleOauthConf := oauth.NewGoogleConfig(oauth.GoogleSignUpCallbackURL())
 	redirectURL := googleOauthConf.AuthCodeURL("")
@@ -32,7 +32,7 @@ func (h *User) SignUpRedirect(c *gin.Context) {
 // @Success 200 {object} responses.JWT
 // @Success 201 "User created"
 // @Failure 400,500
-// @Router /auth/google-oauth [get]
+// @Router /coach/google-oauth [get]
 func (h *User) SignUpWebCallback(c *gin.Context) {
 	req, err := requests.CompleteOAuth(c.Request)
 	if err != nil {
@@ -92,6 +92,13 @@ func (h *User) SignUpWebCallback(c *gin.Context) {
 	c.Redirect(http.StatusCreated, "https://www.google.com/")
 }
 
+// SignUpMobileCallback godoc
+// @ID Sign-Up-Mobile-Callback
+// @Param access_token header string true "Insert google token"
+// @Success 201 "NewTask created"
+// @Success 200 {object} responses.JWT
+// @Failure 400,500
+// @Router /customer/google-callback [post]
 func (h *User) SignUpMobileCallback(c *gin.Context) {
 	accessToken := c.GetHeader("access_token")
 	if accessToken == "" {

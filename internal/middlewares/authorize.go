@@ -42,9 +42,16 @@ func Authorize(c *gin.Context) {
 		return
 	}
 
-	userData, ok := claims["user_data"].(auth.UserData)
+	value, ok := claims["user_data"]
 	if !ok {
-		log.Println("there is no id in claims")
+		log.Println("there is no user data")
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	userData, ok := value.(auth.UserData)
+	if !ok {
+		log.Println("failed to transform to auth.UserData")
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}

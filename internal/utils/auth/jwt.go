@@ -12,8 +12,8 @@ import (
 )
 
 type UserData struct {
-	ID   int
-	Role models.UserRole
+	ID   int             `json:"id"`
+	Role models.UserRole `json:"role"`
 }
 
 func GenerateJWT(user models.User) (string, error) {

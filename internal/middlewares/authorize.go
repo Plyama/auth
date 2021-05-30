@@ -42,14 +42,14 @@ func Authorize(c *gin.Context) {
 		return
 	}
 
-	id, ok := claims["id"].(float64)
+	userData, ok := claims["user_data"].(auth.UserData)
 	if !ok {
 		log.Println("there is no id in claims")
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
-	ctx := context.WithValue(c.Request.Context(), authContextKey, int(id))
+	ctx := context.WithValue(c.Request.Context(), authContextKey, userData)
 	c.Request = c.Request.WithContext(ctx)
 	c.Next()
 }

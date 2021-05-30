@@ -1,7 +1,7 @@
 GOOGLE_CLIENT_ID=272210477903-96m9fb9qrb2a2tgpkhlddeu7v4d6g420.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=YPl8MyLNtnAQ9qWHmGdAIV-M
-GOOGLE_SIGN_UP_WEB_CALLBACK=/api/v1/customer/google-callback
-GOOGLE_SIGN_UP_IOS_CALLBACK=/api/v1/coach/google-callback
+GOOGLE_SIGN_UP_WEB_CALLBACK=api/v1/coach/google-callback
+GOOGLE_SIGN_UP_IOS_CALLBACK=api/v1/customer/google-callback
 DB_HOST=db
 DB_USER=user
 DB_PASSWORD=password

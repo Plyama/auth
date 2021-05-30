@@ -102,6 +102,7 @@ func (h *User) SignUpWebCallback(c *gin.Context) {
 func (h *User) SignUpMobileCallback(c *gin.Context) {
 	accessToken := c.GetHeader("access_token")
 	if accessToken == "" {
+		log.Printf("access token is: %s", accessToken)
 		c.Status(http.StatusBadRequest)
 		return
 	}

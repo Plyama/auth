@@ -66,7 +66,7 @@ func (h *Task) GetTaskDetails(c *gin.Context) {
 	task, err := h.TaskService.GetDetails(req.ID)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			c.Status(http.StatusBadRequest)
+			c.Status(http.StatusNotFound)
 			return
 		}
 		log.Println(err)

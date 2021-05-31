@@ -18,7 +18,7 @@ type contextKey string
 var authContextKey = contextKey("auth")
 
 func AuthorizeViaHeader(c *gin.Context) {
-	token, err := auth.ReadToken(c)
+	token, err := auth.ReadToken(c.Request)
 	if err != nil {
 		switch err.(type) {
 		case auth.NotValidAuthHeader:

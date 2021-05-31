@@ -81,11 +81,6 @@ func (h *Task) GetTaskDetails(c *gin.Context) {
 		return
 	}
 
-	if task.CustomerID != user.ID && *task.CoachID != user.ID {
-		c.Status(http.StatusForbidden)
-		return
-	}
-
 	response := responses.GetTask(*task)
 	c.JSON(http.StatusOK, response)
 }

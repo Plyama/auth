@@ -35,6 +35,7 @@ func NewRouter(services *services.Services) *gin.Engine {
 	coach := api.Group("coach")
 	{
 		coach.GET("google-callback", handler.User.SignUpWebCallback)
+		coach.PUT("", middlewares.Authorize, handler.User.Update)
 
 		tasks := coach.Group("tasks")
 		tasks.GET("/:id", middlewares.Authorize, handler.Task.GetTaskDetails)

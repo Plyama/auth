@@ -107,6 +107,6 @@ func (h *Task) GetTasks(c *gin.Context) {
 		return
 	}
 
-	tasks := responses.GetTasks(*taskModels, responses.GetTaskPreview)
+	tasks := responses.GetTasks(*taskModels, responses.GetTask)
 	c.JSON(http.StatusOK, *tasks)
 }

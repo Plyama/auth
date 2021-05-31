@@ -14,7 +14,7 @@ func NewRouter(services *services.Services) *gin.Engine {
 	config := cors.DefaultConfig()
 	config.AllowAllOrigins = true
 	config.AllowCredentials = true
-	config.AddAllowHeaders("authorization")
+	config.AddAllowHeaders("Authorization")
 
 	r.Use(cors.New(config))
 

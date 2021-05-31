@@ -28,6 +28,13 @@ func (r *UserRepo) Create(user models.User) error {
 	return tx.Error
 }
 
+func (r *UserRepo) GetByID(ID int) (*models.User, error) {
+	var user models.User
+	tx := r.db.Where("id = ?", ID).First(&user)
+
+	return &user, tx.Error
+}
+
 func (r *UserRepo) Update(user models.User) error {
 	tx := r.db.Model(&user).Updates(models.User{
 		PicURL: user.PicURL,

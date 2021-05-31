@@ -22,6 +22,10 @@ func (s *Users) Create(user models.User) error {
 	return s.UsersRepository.Create(user)
 }
 
+func (s *Users) GetByID(ID int) (*models.User, error) {
+	return s.UsersRepository.GetByID(ID)
+}
+
 func (s *Users) Update(user models.User) error {
 	return s.UsersRepository.Update(user)
 }

@@ -8,6 +8,7 @@ import (
 
 type Users interface {
 	Create(user models.User) error
+	GetByID(ID int) (*models.User, error)
 	IsRegistered(email string) (bool, error)
 	GetByEmail(email string) (models.User, error)
 	Update(user models.User) error

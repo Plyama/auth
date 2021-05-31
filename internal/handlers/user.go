@@ -5,6 +5,7 @@ import (
 	"github.com/plyama/auth/internal/middlewares"
 	"github.com/plyama/auth/internal/models"
 	"github.com/plyama/auth/internal/requests"
+	"github.com/plyama/auth/internal/responses"
 	"log"
 	"net/http"
 )
@@ -38,4 +39,24 @@ func (h *User) Update(c *gin.Context) {
 	}
 
 	c.Status(http.StatusOK)
+}
+
+func (h *User) GetMy(c *gin.Context) {
+	user, err := middlewares.GetUserData(c.Request.Context())
+	if err != nil {
+		log.Println(err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	userData, err := h.UserService.GetByID(user.ID)
+	if err != nil {
+		log.Println(err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	resp := responses.GetUser(*userData)
+
+	c.JSON(http.StatusOK, resp)
 }

@@ -25,6 +25,7 @@ func NewRouter(services *services.Services) *gin.Engine {
 	{
 		customer.POST("google-callback", handler.User.SignUpMobileCallback)
 		customer.PUT("", middlewares.Authorize, handler.User.Update)
+		customer.GET("", middlewares.Authorize, handler.User.GetMy)
 
 		tasks := customer.Group("tasks")
 		tasks.POST("", middlewares.Authorize, handler.Task.Create)
@@ -35,6 +36,7 @@ func NewRouter(services *services.Services) *gin.Engine {
 	coach := api.Group("coach")
 	{
 		coach.GET("google-callback", handler.User.SignUpWebCallback)
+		coach.GET("", middlewares.Authorize, handler.User.GetMy)
 		coach.PUT("", middlewares.Authorize, handler.User.Update)
 
 		tasks := coach.Group("tasks")

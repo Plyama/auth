@@ -5,12 +5,12 @@ import (
 )
 
 type Task struct {
-	ID          int
-	CustomerID  int
-	CoachID     *int
-	Name        string
-	Description string
-	Status      models.TaskStatus
+	ID          int               `json:"id"`
+	CustomerID  int               `json:"customer_id"`
+	CoachID     *int              `json:"coach_id"`
+	Name        string            `json:"name"`
+	Description string            `json:"description"`
+	Status      models.TaskStatus `json:"status"`
 }
 
 func GetTask(model models.Task) Task {

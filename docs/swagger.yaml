@@ -1,6 +1,6 @@
 basePath: /api/v1
 definitions:
-  requests.Task:
+  requests.NewTask:
     properties:
       description:
         type: string
@@ -28,7 +28,7 @@ info:
   title: Swagger Example API
   version: "1.0"
 paths:
-  /auth/google-oauth:
+  /coach/google-oauth:
     get:
       operationId: sign-up-google-callback
       responses:
@@ -43,18 +43,38 @@ paths:
         "500":
           description: ""
       summary: Redirect to app's page with login
-  /tasks:
+  /customer/google-callback:
+    post:
+      operationId: Sign-Up-Mobile-Callback
+      parameters:
+      - description: Insert google token
+        in: header
+        name: access_token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.JWT'
+        "201":
+          description: NewTask created
+        "400":
+          description: ""
+        "500":
+          description: ""
+  /customer/tasks:
     post:
       consumes:
       - application/json
       operationId: create-task
       parameters:
-      - description: Task info
+      - description: NewTask info
         in: body
         name: task
         required: true
         schema:
-          $ref: '#/definitions/requests.Task'
+          $ref: '#/definitions/requests.NewTask'
       - description: Insert your jwt
         in: header
         name: Authorization
@@ -62,12 +82,20 @@ paths:
         type: string
       responses:
         "201":
-          description: Task created
+          description: NewTask created
         "400":
           description: ""
         "500":
           description: ""
       summary: Create a task
+  /google-oauth:
+    get:
+      description: No data needed
+      operationId: sign-up-google
+      responses:
+        "307":
+          description: ""
+      summary: Redirect to an OAuth page of Google
 securityDefinitions:
   BearerAuth:
     type: basic

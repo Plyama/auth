@@ -33,7 +33,7 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/auth/google-oauth": {
+        "/coach/google-oauth": {
             "get": {
                 "summary": "Redirect to app's page with login",
                 "operationId": "sign-up-google-callback",
@@ -56,7 +56,38 @@ var doc = `{
                 }
             }
         },
-        "/tasks": {
+        "/customer/google-callback": {
+            "post": {
+                "operationId": "Sign-Up-Mobile-Callback",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Insert google token",
+                        "name": "access_token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.JWT"
+                        }
+                    },
+                    "201": {
+                        "description": "NewTask created"
+                    },
+                    "400": {
+                        "description": ""
+                    },
+                    "500": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/customer/tasks": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -65,12 +96,12 @@ var doc = `{
                 "operationId": "create-task",
                 "parameters": [
                     {
-                        "description": "Task info",
+                        "description": "NewTask info",
                         "name": "task",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/requests.Task"
+                            "$ref": "#/definitions/requests.NewTask"
                         }
                     },
                     {
@@ -83,7 +114,7 @@ var doc = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Task created"
+                        "description": "NewTask created"
                     },
                     "400": {
                         "description": ""
@@ -93,10 +124,22 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/google-oauth": {
+            "get": {
+                "description": "No data needed",
+                "summary": "Redirect to an OAuth page of Google",
+                "operationId": "sign-up-google",
+                "responses": {
+                    "307": {
+                        "description": ""
+                    }
+                }
+            }
         }
     },
     "definitions": {
-        "requests.Task": {
+        "requests.NewTask": {
             "type": "object",
             "properties": {
                 "description": {

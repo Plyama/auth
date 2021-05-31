@@ -72,6 +72,7 @@ func (h *User) SignUpWebCallback(c *gin.Context) {
 			TokenType: "jwt",
 		}
 
+		c.SetCookie("token", jwt, 3600, "", "", false, false)
 		c.JSON(http.StatusOK, resp)
 		return
 	}

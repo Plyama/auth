@@ -1,15 +1,22 @@
 package internal
 
 import (
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	"github.com/plyama/auth/internal/handlers"
 	"github.com/plyama/auth/internal/middlewares"
 	"github.com/plyama/auth/internal/services"
-
-	"github.com/gin-gonic/gin"
 )
 
 func NewRouter(services *services.Services) *gin.Engine {
 	r := gin.Default()
+
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+	config.AllowCredentials = true
+	config.AddAllowHeaders("authorization")
+
+	r.Use(cors.New(config))
 
 	handler := handlers.Handler{
 		User: handlers.NewUser(services.User),
@@ -24,24 +31,24 @@ func NewRouter(services *services.Services) *gin.Engine {
 	customer := api.Group("customer")
 	{
 		customer.POST("google-callback", handler.User.SignUpMobileCallback)
-		customer.PUT("", middlewares.Authorize, handler.User.Update)
-		customer.GET("", middlewares.Authorize, handler.User.GetMy)
+		customer.PUT("", middlewares.AuthorizeViaHeader, handler.User.Update)
+		customer.GET("", middlewares.AuthorizeViaHeader, handler.User.GetMy)
 
 		tasks := customer.Group("tasks")
-		tasks.POST("", middlewares.Authorize, handler.Task.Create)
-		tasks.GET("/:id", middlewares.Authorize, handler.Task.GetTaskDetails)
-		tasks.GET("", middlewares.Authorize, handler.Task.GetTasks)
+		tasks.POST("", middlewares.AuthorizeViaHeader, handler.Task.Create)
+		tasks.GET("/:id", middlewares.AuthorizeViaHeader, handler.Task.GetTaskDetails)
+		tasks.GET("", middlewares.AuthorizeViaHeader, handler.Task.GetTasks)
 	}
 
 	coach := api.Group("coach")
 	{
 		coach.GET("google-callback", handler.User.SignUpWebCallback)
-		coach.GET("", middlewares.Authorize, handler.User.GetMy)
-		coach.PUT("", middlewares.Authorize, handler.User.Update)
+		coach.GET("", middlewares.AuthorizeViaHeader, handler.User.GetMy)
+		coach.PUT("", middlewares.AuthorizeViaHeader, handler.User.Update)
 
 		tasks := coach.Group("tasks")
-		tasks.GET("/:id", middlewares.Authorize, handler.Task.GetTaskDetails)
-		tasks.GET("", middlewares.Authorize, handler.Task.GetTasks)
+		tasks.GET("/:id", middlewares.AuthorizeViaHeader, handler.Task.GetTaskDetails)
+		tasks.GET("", middlewares.AuthorizeViaHeader, handler.Task.GetTasks)
 	}
 
 	return r

@@ -6,10 +6,10 @@ import (
 
 type Task struct {
 	ID          int               `json:"id"`
-	CustomerID  int               `json:"customer_id"`
-	CoachID     *int              `json:"coach_id"`
+	CustomerID  int               `json:"customer_id,omitempty"`
+	CoachID     *int              `json:"coach_id,omitempty"`
 	Name        string            `json:"name"`
-	Description string            `json:"description"`
+	Description string            `json:"description,omitempty"`
 	Status      models.TaskStatus `json:"status"`
 }
 

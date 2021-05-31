@@ -63,13 +63,6 @@ func (h *Task) GetTaskDetails(c *gin.Context) {
 		return
 	}
 
-	user, err := middlewares.GetUserData(c.Request.Context())
-	if err != nil {
-		log.Println(err)
-		c.Status(http.StatusInternalServerError)
-		return
-	}
-
 	task, err := h.TaskService.GetDetails(req.ID)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
